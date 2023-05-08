@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>DotAccademy PHP exercise</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>.res{font-weight: bold;}</style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm mt-5">
+                <h1 class="mx-auto title-table" style="width:fit-content;"> </h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-center my-4">
+                <button type="button" class="btn btn-primary btn-sm mx-auto reload">Reload Exercise</button>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col p-3">
+                    <span class="ex-title res">Exist value 33 ?</span>
+                    <span class="ex-val"></span>
+                </div>
+                <div class="col p-3">
+                    <span class="title">First Odd Value ? </span>
+                    <span class="first-odd-val res"></span>
+                </div>                
+                <div class="col p-3">
+                    <span class="title">Sum Even Numbers </span>
+                    <span class="sum-even-numbers res"></span>
+                </div>
+            </div>
+            <div class="row mt-5 mb-4">
+                <div class="col-sm">
+                    <table id="numbers" class="table table-striped mx-auto">
+                        <thead>
+                            <tr>
+                                <th>Keys</th>
+                                <th>Values</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="text-center">Loading...</td>
+                            </tr>
+                        <tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script  src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script> 
+        const settings={len: 20, offset:1,limit:100}
+        $(document).ready(function () {
+            $('.title-table').text("Array table with "+ settings['len'] +" different elements");
+            ReadJson();
+        });
+        function loadData(dataSet) { console.log()
+            dt=dataSet[0].array;
+            $('#numbers').dataTable({
+                data: Object.keys(dt).map((key) => [ key,dt[key]]),
+                columns: [
+                    { title: 'Keys' },
+                    { title: 'Values' },
+                ],
+                "paging": false,
+                "autoWidth": false
+
+            });
+            $('.ex-val').text(dataSet[0].existnum.toString().toUpperCase());
+             ;
+            const firstoddval  =Object.keys(oddvalue=dataSet[0].firstoddnumber)
+            .map((key) =>[ key,oddvalue=dataSet[0].firstoddnumber[key]]);
+             
+            (firstoddval.length>0) ? $('.first-odd-val').text("Key: "+ firstoddval[0].toString().split(",")[0] + 
+                                     " Value: "+firstoddval[0].toString().split(",")[1]): 
+                                     $('.first-odd-val').text(" Not Found");
+            $('.sum-even-numbers').text((dataSet[0].sumevennumber));
+
+        }
+
+        async function ReadJson() {
+            try {
+                const result = await fetch("api/numbers.php", {
+                    body: JSON.stringify(settings),
+                    method: 'POST'
+                })
+                const jsonResult = await result.json();
+                
+                loadData(jsonResult); 
+            } catch(e) {
+            console.log(e);
+            }
+        }
+        $(".reload").click(function(){location.reload();});
+    </script>
+        
+</html>  
